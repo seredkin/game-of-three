@@ -22,8 +22,8 @@ public class GameEvent {
     private final LocalDateTime created = LocalDateTime.now();
     @Builder.Default
     private final String eventId = UUID.randomUUID().toString();
-    @NonNull
-    private String previousEventId;
+    @Builder.Default
+    private String previousEventId = EMPTY_ID;
     @NonNull
     private final Integer previousMoveValue;
     @NonNull

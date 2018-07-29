@@ -9,7 +9,7 @@ import org.springframework.stereotype.Service;
 import java.util.Random;
 import java.util.UUID;
 
-import static com.seredkin.game_of_three.impl.Roles.PLAYER_1;
+import static com.seredkin.game_of_three.impl.ServiceRoles.PLAYER_1;
 
 @Service(value = PLAYER_1)
 @Profile(PLAYER_1)
@@ -27,7 +27,6 @@ class Player1ServiceImpl extends BasePlayerService implements Player1Service {
     public GameEvent startGame(int firstMoveValue) {
         return GameEvent.builder()
                 .gameId(UUID.randomUUID().toString())
-                .previousEventId(GameEvent.EMPTY_ID)
                 .player(GameEvent.PLAYER.PLAYER_1)
                 .type(GameEvent.TYPE.START_GAME)
                 .previousMoveValue(0)

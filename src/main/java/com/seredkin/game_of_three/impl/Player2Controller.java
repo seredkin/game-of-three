@@ -10,12 +10,12 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@Profile(Roles.PLAYER_2)
+@Profile(ServiceRoles.PLAYER_2)
 public class Player2Controller {
-    @Autowired @Qualifier(Roles.PLAYER_2)
+    @Autowired @Qualifier(ServiceRoles.PLAYER_2)
     private PlayerService player2Service;
 
-    @PostMapping(Roles.PLAYER_2)
+    @PostMapping(ServiceRoles.PLAYER_2)
     public GameEvent nextMove(@RequestBody GameEvent gameEvent) {
         return player2Service.nextMove(gameEvent);
     }

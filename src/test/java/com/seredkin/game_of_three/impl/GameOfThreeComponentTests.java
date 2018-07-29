@@ -16,12 +16,11 @@ import org.springframework.test.context.junit4.SpringRunner;
 import java.util.Arrays;
 import java.util.UUID;
 
-import static com.seredkin.game_of_three.api.GameEvent.EMPTY_ID;
 import static com.seredkin.game_of_three.api.GameEvent.TYPE.END_GAME;
 import static com.seredkin.game_of_three.api.GameEvent.TYPE.NEXT_MOVE;
 import static com.seredkin.game_of_three.api.GameEvent.TYPE.START_GAME;
-import static com.seredkin.game_of_three.impl.Roles.PLAYER_1;
-import static com.seredkin.game_of_three.impl.Roles.PLAYER_2;
+import static com.seredkin.game_of_three.impl.ServiceRoles.PLAYER_1;
+import static com.seredkin.game_of_three.impl.ServiceRoles.PLAYER_2;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
 
@@ -34,20 +33,18 @@ public class GameOfThreeComponentTests {
 
     @Autowired
     @Qualifier(PLAYER_1)
-    private
-    Player1Service player1Service;
-    @Autowired
-    @Qualifier(PLAYER_2)
-    private
-    PlayerService player2Service;
+    private Player1Service player1Service;
 
     @Autowired
-    private
-    ApplicationContext ctx;
+    @Qualifier(PLAYER_2)
+    private PlayerService player2Service;
+
+    @Autowired
+    private ApplicationContext ctx;
 
     @Test
     public void contextLoadsProfiles() {
-        Arrays.asList(ctx.getEnvironment().getActiveProfiles()).containsAll(Arrays.asList(Roles.PLAYER_1, Roles.PLAYER_2));
+        assertThat(Arrays.asList(ctx.getEnvironment().getActiveProfiles()).containsAll(Arrays.asList(ServiceRoles.PLAYER_1, ServiceRoles.PLAYER_2)), equalTo(true));
     }
 
     @Test
@@ -99,7 +96,6 @@ public class GameOfThreeComponentTests {
         player2Service.nextMove(GameEvent.builder().gameId(gameEvent.getGameId())
                 .player(GameEvent.PLAYER.PLAYER_1)
                 .type(NEXT_MOVE)
-                .previousEventId(EMPTY_ID)
                 .previousMoveValue(gameEvent.getMoveValue())
                 .moveValue(0).build());
     }
@@ -117,7 +113,6 @@ public class GameOfThreeComponentTests {
                         .gameId(UUID.randomUUID().toString())
                         .player(GameEvent.PLAYER.PLAYER_2)
                         .type(NEXT_MOVE)
-                        .previousEventId(EMPTY_ID)
                         .previousMoveValue(1)
                         .moveValue(1).build()
         );
