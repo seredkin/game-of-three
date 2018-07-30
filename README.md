@@ -35,9 +35,37 @@ Use web browser, `curl` console command or 'Postman'-like client to check the ou
 
 # Game Workflow
 
-The player in role `player1` always starts the game with a given or random int value in the range (0, Integer.MAX_VALUE-1). To use the random fisrt move value,
-call the endpoint without the least path variable 'http://localhost:10001/player1/play'
-The player who ends the game with eventType:'END_GAME' and moveValue:'1' is the winner
+The player in role `player1` always starts the game with a given or random int value in the range (0, Integer.MAX_VALUE-1).
+To use the random first move value, do not specify any value when initiating the game.
+
+Example of the first move with the maximum possible value `0x7ffffffe`:
+```
+  {
+    "gameId": "6f109d4c-9ab3-4cf4-b047-3d2c3f4eec6d",
+    "created": "2018-07-28T16:02:42.898",
+    "eventId": "89e85051-452d-4ffc-ac1c-bfa59a2b06e4",
+    "previousEventId": "EMPTY",
+    "previousMoveValue": 0,
+    "player": "PLAYER_1",
+    "type": "START_GAME",
+    "moveValue": 2147483646
+  }
+ ```
+
+Players make sequential moves by modifying the opponents value within the range [-1, 1], dividing it by three and passing it to the opponent:
+```
+  {
+    "gameId": "6f109d4c-9ab3-4cf4-b047-3d2c3f4eec6d",
+    "created": "2018-07-28T16:02:43.022",
+    "eventId": "0ba032cb-61eb-4b5e-96a8-0a216cee9f68",
+    "previousEventId": "89e85051-452d-4ffc-ac1c-bfa59a2b06e4",
+    "previousMoveValue": 2147483646,
+    "player": "PLAYER_2",
+    "type": "NEXT_MOVE",
+    "moveValue": 715827882
+  }
+```
+The one who gets the value 1 after its operation, is the winner. The END_GAME event instance has the player value of the winner and moveValue:1.
 ```
   {
     "gameId": "a2f0dd5b-5f36-421e-bd71-3c57dc2f0efa",
