@@ -35,7 +35,7 @@ Use web browser, `curl` console command or 'Postman'-like client to check the ou
 
 # Game Workflow
 
-The player in role `player1` always starts the game with a given or random int value in the range (0, Integer.MAX_VALUE). To use the random fisrt move value,
+The player in role `player1` always starts the game with a given or random int value in the range (0, Integer.MAX_VALUE-1). To use the random fisrt move value,
 call the endpoint without the least path variable 'http://localhost:10001/player1/play'
 The player who ends the game with eventType:'END_GAME' and moveValue:'1' is the winner
 ```
