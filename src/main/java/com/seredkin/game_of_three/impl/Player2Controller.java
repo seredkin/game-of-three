@@ -11,10 +11,11 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @Profile(ServiceRoles.PLAYER_2)
-public class Player2Controller {
+public class Player2Controller implements PlayerController {
     @Autowired @Qualifier(ServiceRoles.PLAYER_2)
     private PlayerService player2Service;
 
+    @Override
     @PostMapping(ServiceRoles.PLAYER_2)
     public GameEvent nextMove(@RequestBody GameEvent gameEvent) {
         return player2Service.nextMove(gameEvent);

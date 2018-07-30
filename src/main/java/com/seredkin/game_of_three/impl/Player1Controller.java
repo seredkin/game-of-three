@@ -8,6 +8,8 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Profile;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -23,7 +25,7 @@ import java.util.Objects;
 @RestController
 @RequestMapping(ServiceRoles.PLAYER_1)
 @Profile(ServiceRoles.PLAYER_1)
-public class Player1Controller {
+public class Player1Controller implements PlayerController {
     @Autowired
     private Player1Service player1Service;
     @Autowired
@@ -37,15 +39,25 @@ public class Player1Controller {
             opponentHost = "http://localhost:" + Integer.valueOf(Objects.requireNonNull(ctx.getEnvironment().getProperty("server.port")));
     }
 
-    @GetMapping("/{value}")
+    @GetMapping("/start")
+    public GameEvent startTheGameWithRandomValue() {
+        return player1Service.startGame();
+    }
+
+    @GetMapping("/start/{value}")
     public GameEvent startTheGame(@PathVariable Integer value) {
 
-        return value == 0 ? player1Service.startGame() : player1Service.startGame(value);
+        return player1Service.startGame(value);
 
     }
 
+    @GetMapping("/play")
+    public List<GameEvent> playTheGameWithRandomValue() {
+        return this.playTheGameWithGivenValue(0);
+    }
+
     @GetMapping("/play/{value}")
-    public List<GameEvent> startGame(@PathVariable Integer value) {
+    public List<GameEvent> playTheGameWithGivenValue(@PathVariable Integer value) {
         LinkedList<GameEvent> result = new LinkedList<>();
         GameEvent gameEvent = value == 0 ? player1Service.startGame() : player1Service.startGame(value);
         result.add(gameEvent);
@@ -63,14 +75,20 @@ public class Player1Controller {
         return new RestTemplate().postForEntity(opponentHost + "/" + ServiceRoles.PLAYER_2, gameEvent, GameEvent.class).getBody();
     }
 
+    /* Emulates delays in the communication with the remote party */
     @GetMapping("/async/play/{value}")
     public Flux<GameEvent> playGame(@RequestParam(required = false, defaultValue = "56") Integer value) {
         Flux<Long> delay = Flux.interval(Duration.ofMillis(50));
 
-        Flux<GameEvent> gameEventFlux = Flux.fromStream(startGame(value).stream());
+        Flux<GameEvent> gameEventFlux = Flux.fromStream(playTheGameWithGivenValue(value).stream());
 
         return gameEventFlux.zipWith(delay, (gameEvent, aLong) -> gameEvent);
     }
 
+    @Override
+    @PostMapping(ServiceRoles.PLAYER_1)
+    public GameEvent nextMove(@RequestBody GameEvent gameEvent) {
+        return player1Service.nextMove(gameEvent);
+    }
 
 }

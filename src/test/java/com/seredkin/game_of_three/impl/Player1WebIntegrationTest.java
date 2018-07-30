@@ -22,10 +22,12 @@ import static com.seredkin.game_of_three.impl.ServiceRoles.PLAYER_1;
 import static com.seredkin.game_of_three.impl.ServiceRoles.PLAYER_2;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
+import static org.hamcrest.Matchers.greaterThan;
 import static org.hamcrest.Matchers.notNullValue;
 
 @RunWith(SpringRunner.class)
-/*As with IntegrationTests profile we run apps on the same host, we match the default 'opponentHost' value in application.yml  */
+/*As with IntegrationTests profile we run apps on the same host, we match the default 'opponentHost' value in application.yml
+ * Make sure other services do not occupy the port */
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT, value = "10002")
 @ActiveProfiles({PLAYER_1, PLAYER_2})
 @Slf4j
@@ -43,10 +45,19 @@ public class Player1WebIntegrationTest {
     @Test
     public void payer1StartGame() {
         WebTestClient webClient = WebTestClient.bindToApplicationContext(ctx).build();
-        GameEvent gameEvent = webClient.get().uri("/" + PLAYER_1 + "/56").exchange().expectStatus().is2xxSuccessful().expectBody(GameEvent.class).returnResult().getResponseBody();
+        GameEvent gameEvent = webClient.get().uri("/" + PLAYER_1 + "/start/56").exchange().expectStatus().is2xxSuccessful().expectBody(GameEvent.class).returnResult().getResponseBody();
 
         assertThat(gameEvent, notNullValue());
         assertThat(gameEvent.getMoveValue(), equalTo(56));
+        assertThat(gameEvent.getType(), equalTo(START_GAME));
+    }
+    @Test
+    public void payer1StartGameRnd() {
+        WebTestClient webClient = WebTestClient.bindToApplicationContext(ctx).build();
+        GameEvent gameEvent = webClient.get().uri("/" + PLAYER_1 + "/start").exchange().expectStatus().is2xxSuccessful().expectBody(GameEvent.class).returnResult().getResponseBody();
+
+        assertThat(gameEvent, notNullValue());
+        assertThat(gameEvent.getMoveValue(), greaterThan(3));
         assertThat(gameEvent.getType(), equalTo(START_GAME));
     }
 
