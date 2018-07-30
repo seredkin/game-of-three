@@ -63,7 +63,17 @@ Players make sequential moves by modifying the opponents value within the range 
     "player": "PLAYER_2",
     "type": "NEXT_MOVE",
     "moveValue": 715827882
-  }
+  },
+    {
+      "gameId": "6f109d4c-9ab3-4cf4-b047-3d2c3f4eec6d",
+      "created": "2018-07-28T16:02:43.053",
+      "eventId": "6f626fec-9862-4d67-8105-1da0338dbe5b",
+      "previousEventId": "0ba032cb-61eb-4b5e-96a8-0a216cee9f68",
+      "previousMoveValue": 715827882,
+      "player": "PLAYER_1",
+      "type": "NEXT_MOVE",
+      "moveValue": 238609294
+    },
 ```
 The one who gets the value 1 after its operation, is the winner. The END_GAME event instance has the player value of the winner and moveValue:1.
 ```
